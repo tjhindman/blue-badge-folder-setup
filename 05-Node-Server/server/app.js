@@ -1,3 +1,5 @@
+// need to research .config()
+require("dotenv").config()
 let express = require("express");
 let app = express();
 let sequelize = require("./db");
