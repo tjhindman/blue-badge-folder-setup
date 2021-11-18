@@ -6,6 +6,7 @@ const User = require("../db").import("../models/user");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
+
 // USER SIGN UP
 router.post("/create", (req, res) => {
   User.create({

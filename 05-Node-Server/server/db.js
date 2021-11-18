@@ -11,6 +11,9 @@ const sequelize = new Sequelize("journal-walkthrough", "postgres", "password", {
   dialect: "postgres",
 });
 
+// - OR -
+// const sequelize = new Sequelize(database://user:password@host:port/dbname)
+
 // .then() arguments confusing for error handling
 sequelize.authenticate().then(
   () => {
