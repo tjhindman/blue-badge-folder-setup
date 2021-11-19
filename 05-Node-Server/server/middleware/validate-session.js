@@ -26,13 +26,10 @@ const validateSession = (req, res, next) => {
           },
         })
           .then((user) => {
-            console.log("user -->", user);
-
             // no curly braces around "if" statement/function will execute stuff after parenthesis I guess.
             // probably good use if there is only one peice of logic for the "if" statement/function
             if (!user) throw err;
 
-            console.log("req -->", req);
             req.user = user;
             return next();
           })

@@ -5,10 +5,6 @@ let validateSession = require("../middleware/validate-session");
 // .require().import() ???
 const Journal = require("../db").import("../models/journal");
 
-router.get("/practice", validateSession, (req, res) => {
-  res.send("This is the practice route!");
-});
-
 router.post("/create", validateSession, (req, res) => {
   const journalEntry = {
     title: req.body.journal.title,
@@ -38,7 +34,7 @@ router.get("/mine", validateSession, (req, res) => {
     .catch((err) => res.status(500).json({ error: err }));
 });
 
-router.get("/:title", validateSession, (req, res) => {
+router.get("/:title", (req, res) => {
   Journal.findAll({
     where: { title: req.params.title },
   })

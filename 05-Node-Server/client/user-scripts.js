@@ -1,5 +1,5 @@
 // USER SIGNUP
-userSignUp = () => {
+userSignUp = async () => {
   let userEmail = document.getElementById("emailSignup").value;
   let userPass = document.getElementById("pwdSignup").value;
   let newUserData = {
@@ -12,37 +12,74 @@ userSignUp = () => {
     `NEW USER DATA ==> ${newUserData.user.email}    ${newUserData.user.password}`
   );
 
-  fetch("http://localhost:3000/user/create", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(newUserData),
-  })
-    .then((res) => res.json())
-    .then((data) => {
-      console.log(data.sessionToken);
-      let token = data.sessionToken;
+  try {
+    const res = await fetch("http://localhost:3000/user/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newUserData),
+    });
 
-      // need to read more about localStorage and localStorage.setItem()
-      localStorage.setItem("SessionToken", token);
-      tokenChecker();
-    })
-    .catch((err) => console.log(err));
+    const data = await res.json();
+
+    console.log("token: ", data.token);
+    let token = data.token;
+
+    // need to read more about localStorage and localStorage.setItem()
+    localStorage.setItem("token", token);
+    tokenChecker();
+    console.log("User signed up!");
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 // USER LOGIN
-userLogin = () => {
-  console.log("userLogin function called!");
+userLogin = async () => {
+  let userEmail = document.getElementById("emailLogin").value;
+  let userPass = document.getElementById("pwdLogin").value;
+  let userData = {
+    user: {
+      email: userEmail,
+      password: userPass,
+    },
+  };
+  console.log(
+    `USER DATA ==> ${userData.user.email}    ${userData.user.password}`
+  );
+
+  try {
+    const res = await fetch("http://localhost:3000/user/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userData),
+    });
+    const data = await res.json();
+
+    console.log("token: ", data.token);
+    let token = data.token;
+
+    // need to read more about localStorage and localStorage.setItem()
+    localStorage.setItem("token", token);
+    tokenChecker();
+    console.log("User logged in!");
+  } catch (err) {
+    console.log(err);
+  }
 };
 
 // USER LOGOUT
 userLogout = () => {
-  console.log("userLogout function called!");
+  localStorage.setItem("token", undefined);
+  console.log(`token ==> ${localStorage.token}`);
+  tokenChecker();
 };
 
 // TOKEN CHECKER FUNCTION
 tokenChecker = () => {
-  console.log("tokenChecker function called!");
+  console.log("tokenChecker function called!", localStorage);
 };
 tokenChecker();

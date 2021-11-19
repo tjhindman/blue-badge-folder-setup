@@ -10,16 +10,12 @@ let user = require("./controllers/usercontroller");
 sequelize.sync();
 // sequelize.sync({force: true})
 
+app.use(require("./middleware/headers"));
+
 app.use(express.json());
 
 app.use("/user", user);
 
-// We imported the  middleware, which will check to see if the incoming request has a token.
-// Anything beneath the  will require a token to access, thus becoming protected.
-// Anything above it will not require a token, remaining unprotected.
-// Therefore, the   routes is not protected, while the  route is protected. ↓↓↓↓
-
-// ***THIS IS WHAT ABOVE IS TALKING ABOUT*** app.use(require("./middleware/validate-session"));
 app.use("/journal", journal);
 
 app.listen(3000, () => {
