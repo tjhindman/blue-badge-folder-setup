@@ -2,12 +2,14 @@
 userSignUp = async () => {
   let userEmail = document.getElementById("emailSignup").value;
   let userPass = document.getElementById("pwdSignup").value;
+
   let newUserData = {
     user: {
       email: userEmail,
       password: userPass,
     },
   };
+
   console.log(
     `NEW USER DATA ==> ${newUserData.user.email}    ${newUserData.user.password}`
   );
@@ -30,8 +32,8 @@ userSignUp = async () => {
     localStorage.setItem("token", token);
     tokenChecker();
     console.log("User signed up!");
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log({ error });
   }
 };
 
@@ -66,8 +68,8 @@ userLogin = async () => {
     localStorage.setItem("token", token);
     tokenChecker();
     console.log("User logged in!");
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log({ error });
   }
 };
 

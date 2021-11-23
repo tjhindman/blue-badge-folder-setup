@@ -17,7 +17,7 @@ postJournal = async () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken,
+        Authorization: `Bearer ${accessToken}`,
       },
       body: JSON.stringify(newEntry),
     });
@@ -25,8 +25,8 @@ postJournal = async () => {
 
     console.log("postJournal function response: ", data);
     displayMine();
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log(error);
   }
 };
 
@@ -57,22 +57,38 @@ editJournal = async (postId) => {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
-            Authorization: accessToken,
+            Authorization: `Bearer ${accessToken}`,
           },
           body: JSON.stringify(updatedEntry),
         }
       );
       const data = await res.json();
 
+      console.log("editJournal function response: ", data);
       displayMine();
-      console.log("editJournal function called!");
-    } catch (err) {
-      console.log(err);
+    } catch (error) {
+      console.log({ error });
     }
   }
 };
 
 // DELETE JOURNAL
-deleteJournal = (postId) => {
-  console.log("deleteJournal function called!");
+deleteJournal = async (postId) => {
+  const accessToken = localStorage.getItem("token");
+
+  try {
+    const res = await fetch(`http://localhost:3000/journal/delete/${postId}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+    const data = await res.json();
+
+    console.log("deleteJournal function response: ", data);
+    displayMine();
+  } catch (error) {
+    console.log({ error });
+  }
 };

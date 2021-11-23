@@ -7,7 +7,7 @@ displayMine = async () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: accessToken,
+        Authorization: `Bearer ${accessToken}`,
       },
     });
 
@@ -73,8 +73,8 @@ displayMine = async () => {
       }
     }
     console.log("displayMine function called!");
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log({ error });
   }
 };
 
@@ -136,8 +136,8 @@ displayAll = async () => {
       }
     }
     console.log("displayAll function called!");
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log({ error });
   }
 };
 
@@ -201,7 +201,7 @@ displayByTitle = async () => {
       }
     }
     console.log("displayByTitle function called!");
-  } catch (err) {
-    console.log(err);
+  } catch (error) {
+    console.log({ error });
   }
 };

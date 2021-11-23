@@ -1,43 +1,53 @@
 const jwt = require("jsonwebtoken");
 // .require().import() ???
-const User = require("../db").import("../models/user");
+const { UserModel } = require("../models");
 
 // ~ THIS IS A MIDDLEWARE FUNCTION ~
-const validateSession = (req, res, next) => {
-  const token = req.headers.authorization;
-  console.log("token -->", token);
+const validateSession = async (req, res, next) => {
+  // need to look into "req.method"
+  if (req.method == "OPTIONS") {
+    next();
+  } else if (
+    req.headers.authorization &&
+    req.headers.authorization.includes("Bearer")
+  ) {
+    const { authorization } = req.headers;
+    // console.log("authorization ----->", authorization);
+    const payload = authorization
+      ? jwt.verify(
+          authorization.includes("Bearer")
+            ? authorization.split(" ")[1]
+            : authorization,
+          process.env.JWT_SECRET
+        )
+      : undefined;
+    // console.log("payload ----->", payload);
 
-  if (!token) {
-    return res.status(403).send({
-      auth: false,
-      message: "No token provided.",
-    });
-  } else {
-    // arrow function passing in "decodeToken" is confusing. See "Line 10" explanation here:
-    // https://elevenfifty.instructure.com/courses/746/pages/12-dot-2-1-validate-session?module_item_id=64822
-    jwt.verify(token, process.env.JWT_SECRET, (err, decodeToken) => {
-      console.log("decodeToken -->", decodeToken);
+    if (payload) {
+      let foundUser = await UserModel.findOne({
+        where: {
+          id: payload.id,
+        },
+      });
+      // console.log("foundUser ----->", foundUser);
 
-      if (!err && decodeToken) {
-        User.findOne({
-          where: {
-            // "id" is passed in usercontroller.js in User.create() function
-            id: decodeToken.id,
-          },
-        })
-          .then((user) => {
-            // no curly braces around "if" statement/function will execute stuff after parenthesis I guess.
-            // probably good use if there is only one peice of logic for the "if" statement/function
-            if (!user) throw err;
-
-            req.user = user;
-            return next();
-          })
-          .catch((err) => next(err));
+      if (foundUser) {
+        // console.log("request ----->", req);
+        req.user = foundUser;
+        next();
       } else {
-        req.errors = err;
-        return res.status(500).send("Not authorized");
+        res.status(400).json({
+          message: "Not authorized.",
+        });
       }
+    } else {
+      res.status(401).json({
+        message: "Invalid token.",
+      });
+    }
+  } else {
+    res.status(403).json({
+      message: "Forbidden.",
     });
   }
 };
